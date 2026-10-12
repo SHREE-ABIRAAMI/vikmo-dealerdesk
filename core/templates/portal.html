@@ -6,124 +6,238 @@
   <title>VIKMO DealerDesk — B2B Parts & Ordering Portal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-main: #f8fafc;
-      --bg-card: #ffffff;
+      --bg-body: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-surface-subtle: #f1f5f9;
       --border: #e2e8f0;
       --border-focus: #3b82f6;
       --text-main: #0f172a;
       --text-muted: #64748b;
+      --text-subtle: #94a3b8;
+      
       --primary: #2563eb;
       --primary-hover: #1d4ed8;
       --primary-light: #eff6ff;
-      --success: #16a34a;
-      --success-light: #f0fdf4;
-      --warning: #d97706;
+      --primary-border: #bfdbfe;
+      
+      --accent: #6366f1;
+      --accent-light: #eef2ff;
+      
+      --success: #10b981;
+      --success-light: #ecfdf5;
+      --success-text: #047857;
+      
+      --warning: #f59e0b;
       --warning-light: #fffbeb;
-      --danger: #dc2626;
+      --warning-text: #b45309;
+      
+      --danger: #ef4444;
       --danger-light: #fef2f2;
-      --radius: 8px;
-      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --danger-text: #b91c1c;
+
+      --radius-sm: 6px;
+      --radius: 10px;
+      --radius-lg: 14px;
+      
+      --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.03);
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: var(--bg-main);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-body);
       color: var(--text-main);
       line-height: 1.5;
-      font-size: 14px;
+      font-size: 13.5px;
+      -webkit-font-smoothing: antialiased;
     }
+
+    /* Top Accent Line */
+    .brand-accent-line {
+      height: 3px;
+      background: linear-gradient(90deg, #2563eb, #6366f1, #06b6d4, #10b981);
+      width: 100%;
+    }
+
+    /* Header */
     header {
-      background: #ffffff;
+      background: var(--bg-surface);
       border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
-      z-index: 40;
+      z-index: 50;
+      box-shadow: var(--shadow-xs);
     }
     .header-inner {
-      max-width: 1400px;
+      max-width: 1440px;
       margin: 0 auto;
       padding: 0 24px;
       height: 64px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 16px;
     }
     .brand {
       display: flex;
       align-items: center;
       gap: 12px;
-      font-weight: 700;
-      font-size: 18px;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+    .brand-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
+    }
+    .brand-name {
+      font-weight: 800;
+      font-size: 17px;
+      letter-spacing: -0.3px;
       color: #0f172a;
     }
     .brand-badge {
-      background: #fef08a;
-      color: #854d0e;
+      background: #f1f5f9;
+      color: #475569;
       font-size: 11px;
       font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 4px;
-      letter-spacing: 0.5px;
+      padding: 2px 7px;
+      border-radius: 5px;
+      border: 1px solid var(--border);
     }
     .track-pill {
       background: var(--primary-light);
       color: var(--primary);
-      font-size: 12px;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 12px;
-      border: 1px solid #bfdbfe;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--primary-border);
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
+
     .nav-tabs {
       display: flex;
-      gap: 4px;
+      gap: 6px;
+      align-items: center;
     }
     .nav-tab {
       padding: 8px 14px;
-      font-weight: 500;
+      font-weight: 600;
       font-size: 13px;
       color: var(--text-muted);
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
       border: none;
       background: none;
       transition: all 0.15s ease;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
+      font-family: inherit;
     }
-    .nav-tab:hover { background: #f1f5f9; color: var(--text-main); }
-    .nav-tab.active { background: var(--primary); color: #ffffff; font-weight: 600; }
+    .nav-tab:hover { background: var(--bg-surface-subtle); color: var(--text-main); }
+    .nav-tab.active { background: var(--primary); color: #ffffff; }
+
+    /* Main Container */
     main {
-      max-width: 1400px;
+      max-width: 1440px;
       margin: 0 auto;
       padding: 24px;
     }
     .tab-content { display: none; }
-    .tab-content.active { display: block; animation: fadeIn 0.2s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    .tab-content.active { display: block; animation: fadeIn 0.2s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Cards & Stats */
-    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 24px; }
-    .stat-card {
-      background: var(--bg-card);
+    /* KPI Stat Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .kpi-card {
+      background: var(--bg-surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 20px;
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+    .kpi-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-1px);
+    }
+    .kpi-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--primary);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .kpi-card:hover::before { opacity: 1; }
+    .kpi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .kpi-title { font-size: 12.5px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .kpi-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+    .kpi-value { font-size: 28px; font-weight: 800; margin: 8px 0 4px; color: #0f172a; letter-spacing: -0.5px; }
+    .kpi-desc { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+
+    /* Surface Cards & Panels */
+    .panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
       box-shadow: var(--shadow-sm);
     }
-    .stat-title { font-size: 13px; color: var(--text-muted); font-weight: 500; }
-    .stat-value { font-size: 26px; font-weight: 700; margin-top: 6px; color: #0f172a; }
-    .stat-desc { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .panel-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fafafa;
+      border-top-left-radius: var(--radius);
+      border-top-right-radius: var(--radius);
+    }
+    .panel-title { font-size: 15px; font-weight: 700; color: #0f172a; }
+    .panel-body { padding: 20px; }
 
     /* Tables */
     .table-container {
-      background: var(--bg-card);
+      background: var(--bg-surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       box-shadow: var(--shadow-sm);
@@ -132,15 +246,15 @@
     table { width: 100%; border-collapse: collapse; text-align: left; }
     th {
       background: #f8fafc;
-      padding: 12px 16px;
-      font-size: 12px;
-      font-weight: 600;
+      padding: 12px 18px;
+      font-size: 11.5px;
+      font-weight: 700;
       color: var(--text-muted);
       border-bottom: 1px solid var(--border);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.6px;
     }
-    td { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 13px; }
+    td { padding: 14px 18px; border-bottom: 1px solid var(--border); font-size: 13px; }
     tr:last-child td { border-bottom: none; }
     tr:hover td { background-color: #f8fafc; }
 
@@ -148,77 +262,104 @@
     .badge {
       display: inline-flex;
       align-items: center;
-      padding: 2px 8px;
-      font-size: 11px;
-      font-weight: 600;
-      border-radius: 4px;
+      gap: 4px;
+      padding: 3px 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+      border-radius: 6px;
+      line-height: 1;
     }
     .badge-draft { background: #f1f5f9; color: #475569; }
     .badge-confirmed { background: var(--primary-light); color: var(--primary); }
-    .badge-dispatched { background: var(--warning-light); color: var(--warning); }
-    .badge-delivered { background: var(--success-light); color: var(--success); }
-    .badge-cancelled { background: var(--danger-light); color: var(--danger); }
-    .badge-stock { background: #f0fdf4; color: #15803d; font-weight: 700; }
-    .badge-low { background: #fef2f2; color: #b91c1c; font-weight: 700; }
+    .badge-dispatched { background: var(--warning-light); color: var(--warning-text); }
+    .badge-delivered { background: var(--success-light); color: var(--success-text); }
+    .badge-cancelled { background: var(--danger-light); color: var(--danger-text); }
+    
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .badge-stock-in { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+    .badge-stock-in .status-dot { background: #10b981; }
+    .badge-stock-low { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+    .badge-stock-low .status-dot { background: #f59e0b; }
+    .badge-stock-out { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+    .badge-stock-out .status-dot { background: #ef4444; }
 
-    /* Form Controls */
-    .search-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 20px;
-      background: #ffffff;
-      padding: 16px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-    }
-    .input-field, .select-field {
-      padding: 8px 12px;
-      font-size: 13px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: #ffffff;
-      outline: none;
-      font-family: inherit;
-    }
-    .input-field:focus, .select-field:focus { border-color: var(--border-focus); }
+    /* Buttons */
     .btn {
       padding: 8px 16px;
       font-size: 13px;
       font-weight: 600;
-      border-radius: 6px;
-      border: none;
+      border-radius: 7px;
+      border: 1px solid transparent;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      transition: background-color 0.15s ease;
+      gap: 7px;
+      transition: all 0.15s ease;
       font-family: inherit;
+      line-height: 1.2;
     }
-    .btn-primary { background: var(--primary); color: #ffffff; }
-    .btn-primary:hover { background: var(--primary-hover); }
-    .btn-secondary { background: #f1f5f9; color: #334155; border: 1px solid var(--border); }
-    .btn-secondary:hover { background: #e2e8f0; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-primary { background: var(--primary); color: #ffffff; border-color: var(--primary); }
+    .btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
+    .btn-secondary { background: #ffffff; color: #334155; border-color: var(--border); }
+    .btn-secondary:hover:not(:disabled) { background: #f8fafc; border-color: #cbd5e1; }
     .btn-success { background: var(--success); color: #ffffff; }
-    .btn-success:hover { background: #15803d; }
+    .btn-success:hover:not(:disabled) { background: #059669; }
     .btn-danger { background: var(--danger); color: #ffffff; }
-    .btn-danger:hover { background: #b91c1c; }
-    .btn-sm { padding: 4px 10px; font-size: 12px; }
+    .btn-danger:hover:not(:disabled) { background: #dc2626; }
+    .btn-sm { padding: 5px 11px; font-size: 12px; }
 
-    /* Chat UI */
+    /* Form Controls */
+    .input-field, .select-field {
+      padding: 9px 13px;
+      font-size: 13px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      background: #ffffff;
+      outline: none;
+      font-family: inherit;
+      color: var(--text-main);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .input-field:focus, .select-field:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    /* Filter Bar */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+      background: var(--bg-surface);
+      padding: 14px 18px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-xs);
+      align-items: center;
+    }
+
+    /* Chat Layout */
     .chat-layout {
       display: grid;
-      grid-template-columns: 1fr 340px;
+      grid-template-columns: 1fr 360px;
       gap: 20px;
-      height: 700px;
+      height: 720px;
     }
     .chat-window {
-      background: var(--bg-card);
+      background: var(--bg-surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      box-shadow: var(--shadow-sm);
     }
     .chat-header {
       padding: 16px 20px;
@@ -226,6 +367,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      background: #fafafa;
     }
     .chat-messages {
       flex: 1;
@@ -234,46 +376,60 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
+      background: #fbfcfd;
     }
     .chat-msg {
-      max-width: 80%;
-      padding: 12px 16px;
-      border-radius: 10px;
-      font-size: 13px;
+      max-width: 82%;
+      padding: 14px 18px;
+      border-radius: 12px;
+      font-size: 13.5px;
       line-height: 1.6;
     }
     .msg-user {
       align-self: flex-end;
-      background: var(--primary);
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
       color: #ffffff;
-      border-bottom-right-radius: 2px;
+      border-bottom-right-radius: 3px;
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
     }
     .msg-bot {
       align-self: flex-start;
-      background: #f1f5f9;
+      background: #ffffff;
       color: var(--text-main);
-      border-bottom-left-radius: 2px;
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 3px;
+      box-shadow: var(--shadow-xs);
     }
     .msg-meta {
-      margin-top: 8px;
+      margin-top: 10px;
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      font-size: 11px;
+      padding-top: 8px;
+      border-top: 1px solid #f1f5f9;
     }
     .tool-badge {
-      background: #e0e7ff;
-      color: #3730a3;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-family: monospace;
+      background: #eef2ff;
+      color: #4338ca;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      font-weight: 600;
+      border: 1px solid #c7d2fe;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
     .sku-badge {
-      background: #dcfce7;
-      color: #166534;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-weight: 600;
+      background: #ecfdf5;
+      color: #065f46;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-weight: 700;
+      font-size: 11.5px;
+      border: 1px solid #a7f3d0;
+      cursor: pointer;
     }
     .chat-input-bar {
       padding: 16px;
@@ -284,63 +440,108 @@
     }
     .chat-input-bar input { flex: 1; }
 
-    /* Modal */
+    /* Modals */
     .modal-backdrop {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.4);
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(2px);
       z-index: 100;
       align-items: center;
       justify-content: center;
     }
-    .modal-backdrop.show { display: flex; }
+    .modal-backdrop.show { display: flex; animation: fadeIn 0.15s ease-out; }
     .modal-box {
       background: #ffffff;
-      width: 600px;
-      max-width: 90%;
-      border-radius: 8px;
-      box-shadow: var(--shadow-md);
+      width: 640px;
+      max-width: 92%;
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg);
       overflow: hidden;
+      border: 1px solid var(--border);
     }
     .modal-header {
-      padding: 16px 20px;
+      padding: 18px 22px;
       border-bottom: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      background: #fafafa;
     }
-    .modal-body { padding: 20px; max-height: 480px; overflow-y: auto; }
+    .modal-body { padding: 22px; max-height: 520px; overflow-y: auto; }
     .modal-footer {
-      padding: 14px 20px;
+      padding: 14px 22px;
       border-top: 1px solid var(--border);
       display: flex;
       justify-content: flex-end;
       gap: 10px;
       background: #f8fafc;
     }
+    
+    /* Callout Card */
+    .callout-box {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 18px;
+      font-size: 13px;
+      color: #1e40af;
+      line-height: 1.6;
+    }
   </style>
 </head>
 <body>
+  <div class="brand-accent-line"></div>
   <header>
     <div class="header-inner">
       <div class="brand">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-          <line x1="12" y1="22.08" x2="12" y2="12"></line>
-        </svg>
-        <span>VIKMO DealerDesk</span>
-        <span class="brand-badge">B2B OS</span>
-        <span class="track-pill">Track: AI / ML Intern (aiml)</span>
+        <div class="brand-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+          </svg>
+        </div>
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="brand-name">VIKMO DealerDesk</span>
+            <span class="brand-badge">B2B OS</span>
+          </div>
+          <div style="font-size: 11px; color: var(--text-muted); font-weight: 500;">Automotive Parts Distribution Engine</div>
+        </div>
+        <div class="track-pill" style="margin-left: 12px;">
+          <span class="status-dot" style="background: #2563eb;"></span>
+          Track: AI/ML Intern (aiml)
+        </div>
       </div>
+
       <nav class="nav-tabs">
-        <button class="nav-tab active" onclick="switchTab('dashboard')">📊 Dashboard</button>
-        <button class="nav-tab" onclick="switchTab('catalogue')">📦 Catalogue</button>
-        <button class="nav-tab" onclick="switchTab('orders')">🛒 Orders & Cart (<span id="cart-count">0</span>)</button>
-        <button class="nav-tab" onclick="switchTab('assistant')">🤖 AI Assistant</button>
-        <button class="nav-tab" onclick="switchTab('reorder')">📈 Reorder ML</button>
-        <button class="nav-tab" onclick="switchTab('supplier')">🔄 Supplier Sync</button>
+        <button class="nav-tab active" onclick="switchTab('dashboard')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          Dashboard
+        </button>
+        <button class="nav-tab" onclick="switchTab('catalogue')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+          Catalogue
+        </button>
+        <button class="nav-tab" onclick="switchTab('orders')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+          Orders & Cart (<span id="cart-count">0</span>)
+        </button>
+        <button class="nav-tab" onclick="switchTab('assistant')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"></path><rect x="4" y="8" width="16" height="12" rx="2"></rect><path d="M9 13v2"></path><path d="M15 13v2"></path></svg>
+          AI Assistant
+        </button>
+        <button class="nav-tab" onclick="switchTab('reorder')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+          Reorder ML
+        </button>
+        <button class="nav-tab" onclick="switchTab('supplier')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg>
+          Supplier Sync
+        </button>
       </nav>
     </div>
   </header>
@@ -348,60 +549,97 @@
   <main>
     <!-- TAB 1: DASHBOARD -->
     <section id="tab-dashboard" class="tab-content active">
-      <div class="grid-4">
-        <div class="stat-card">
-          <div class="stat-title">Catalogue Products</div>
-          <div class="stat-value" id="kpi-products">600</div>
-          <div class="stat-desc">Active parts across 11 categories</div>
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">Active Catalogue</span>
+            <span class="badge badge-stock-in"><span class="status-dot"></span> Seeded</span>
+          </div>
+          <div class="kpi-value" id="kpi-products">600</div>
+          <div class="kpi-desc">OEM & aftermarket parts across 11 categories</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-title">Active Dealers</div>
-          <div class="stat-value" id="kpi-dealers">25</div>
-          <div class="stat-desc">South India distribution network</div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">Distribution Network</span>
+            <span class="badge badge-stock-in"><span class="status-dot"></span> Active</span>
+          </div>
+          <div class="kpi-value" id="kpi-dealers">25</div>
+          <div class="kpi-desc">South India distribution partner accounts</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-title">Forecast SKUs</div>
-          <div class="stat-value" id="kpi-forecast">40</div>
-          <div class="stat-desc">4-week demand model (Diwali uplift)</div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">ML Demand Forecast</span>
+            <span class="badge badge-confirmed">160 Rows</span>
+          </div>
+          <div class="kpi-value" id="kpi-forecast">40 SKUs</div>
+          <div class="kpi-desc">4-week horizon (WAPE 19.04% vs MA4 25.71%)</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-title">System Status</div>
-          <div class="stat-value" style="color: var(--success); font-size: 20px;">● Healthy (PostgreSQL)</div>
-          <div class="stat-desc">API Contract 100% compliant</div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">Engine Concurrency</span>
+            <span class="badge badge-stock-in"><span class="status-dot"></span> Row Locks</span>
+          </div>
+          <div class="kpi-value" style="color: var(--primary);">PostgreSQL</div>
+          <div class="kpi-desc">select_for_update atomic stock protection</div>
         </div>
       </div>
 
       <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
-        <div class="table-container" style="padding: 20px;">
-          <h3 style="margin-bottom: 12px;">Quick Start Operations</h3>
-          <p style="color: var(--text-muted); margin-bottom: 16px;">
-            VIKMO DealerDesk resolves inventory overselling, automates ERP supplier sync, provides an explainable demand forecasting engine, and empowers dealers with a grounded GenAI conversational assistant.
-          </p>
-          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <button class="btn btn-primary" onclick="switchTab('catalogue')">Browse 600 Parts</button>
-            <button class="btn btn-secondary" onclick="switchTab('assistant')">Open AI Dealer Assistant</button>
-            <button class="btn btn-secondary" onclick="switchTab('reorder')">Inspect Safety Stock & Reorder</button>
-            <button class="btn btn-secondary" onclick="switchTab('supplier')">Run Supplier Sync</button>
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">Operations Console</span>
+            <span class="badge badge-stock-in"><span class="status-dot"></span> Ready for Orders</span>
+          </div>
+          <div class="panel-body">
+            <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 13.5px; line-height: 1.6;">
+              VIKMO DealerDesk resolves dealership inventory overselling, automates ERP supplier catalogue synchronization, provides an explainable demand forecasting pipeline with Diwali festival adjustments, and features a database-grounded GenAI assistant.
+            </p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button class="btn btn-primary" onclick="switchTab('catalogue')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                Browse 600 Parts
+              </button>
+              <button class="btn btn-secondary" onclick="switchTab('assistant')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                Open GenAI Assistant
+              </button>
+              <button class="btn btn-secondary" onclick="switchTab('reorder')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline></svg>
+                Safety Stock Reorders
+              </button>
+              <button class="btn btn-secondary" onclick="switchTab('supplier')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline></svg>
+                Supplier Sync
+              </button>
+            </div>
           </div>
         </div>
-        <div class="table-container" style="padding: 20px;">
-          <h3 style="margin-bottom: 12px;">Current Dealer Context</h3>
-          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">Selected for orders & assistant:</p>
-          <select id="active-dealer-select" class="select-field" style="width: 100%; margin-bottom: 12px;" onchange="updateActiveDealer()">
-            <!-- Loaded dynamically -->
-          </select>
-          <div id="active-dealer-info" style="font-size: 12px; color: var(--text-muted);"></div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">Active Dealer Session</span>
+          </div>
+          <div class="panel-body">
+            <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 8px;">Order actions & AI assistant operate on this dealer:</p>
+            <select id="active-dealer-select" class="select-field" style="width: 100%; margin-bottom: 14px;" onchange="updateActiveDealer()">
+              <!-- Loaded dynamically -->
+            </select>
+            <div id="active-dealer-info" style="font-size: 12px; color: var(--text-muted); line-height: 1.6; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid var(--border);"></div>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- TAB 2: CATALOGUE -->
     <section id="tab-catalogue" class="tab-content">
-      <div class="search-bar">
-        <input type="text" id="cat-search" class="input-field" placeholder="Search by SKU, name, or brand..." style="min-width: 250px;">
+      <div class="filter-bar">
+        <input type="text" id="cat-search" class="input-field" placeholder="Search by SKU, name, or brand..." style="min-width: 260px;">
         <input type="text" id="cat-vehicle" class="input-field" placeholder="Vehicle fitment (e.g. Pulsar 150)">
         <select id="cat-category" class="select-field">
-          <option value="">All Categories</option>
+          <option value="">All Categories (600)</option>
           <option value="Brakes">Brakes</option>
           <option value="Drivetrain">Drivetrain</option>
           <option value="Engine & Oils">Engine & Oils</option>
@@ -410,8 +648,11 @@
           <option value="Body & Styling">Body & Styling</option>
           <option value="Universal Accessories">Universal Accessories</option>
         </select>
-        <button class="btn btn-primary" onclick="loadProducts(1)">Filter Products</button>
-        <button class="btn btn-secondary" onclick="resetProductFilters()">Reset</button>
+        <button class="btn btn-primary" onclick="loadProducts(1)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          Filter Parts
+        </button>
+        <button class="btn btn-secondary" onclick="resetProductFilters()">Reset Filters</button>
       </div>
 
       <div class="table-container">
@@ -425,18 +666,18 @@
               <th>Vehicle Fitment</th>
               <th>Price (₹)</th>
               <th>Available Stock</th>
-              <th>Action</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody id="products-tbody">
-            <tr><td colspan="8" style="text-align: center; color: var(--text-muted);">Loading catalogue...</td></tr>
+            <tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 30px;">Loading parts catalogue...</td></tr>
           </tbody>
         </table>
-        <div style="padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border);">
-          <span id="product-pagination-info" style="font-size: 12px; color: var(--text-muted);"></span>
+        <div style="padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); background: #fafafa;">
+          <span id="product-pagination-info" style="font-size: 12.5px; color: var(--text-muted); font-weight: 500;"></span>
           <div style="display: flex; gap: 8px;">
-            <button id="btn-prev-page" class="btn btn-secondary btn-sm" onclick="changeProductPage(-1)">Previous</button>
-            <button id="btn-next-page" class="btn btn-secondary btn-sm" onclick="changeProductPage(1)">Next</button>
+            <button id="btn-prev-page" class="btn btn-secondary btn-sm" onclick="changeProductPage(-1)">← Previous</button>
+            <button id="btn-next-page" class="btn btn-secondary btn-sm" onclick="changeProductPage(1)">Next →</button>
           </div>
         </div>
       </div>
@@ -444,29 +685,36 @@
 
     <!-- TAB 3: ORDERS & CART -->
     <section id="tab-orders" class="tab-content">
-      <div style="display: grid; grid-template-columns: 340px 1fr; gap: 20px;">
-        <!-- Cart Card -->
-        <div class="table-container" style="padding: 20px; height: fit-content;">
-          <h3 style="margin-bottom: 12px;">Active Cart</h3>
-          <div id="cart-items-list" style="margin-bottom: 16px;">
-            <p style="color: var(--text-muted); font-size: 13px;">Cart is empty. Add parts from catalogue.</p>
+      <div style="display: grid; grid-template-columns: 360px 1fr; gap: 20px;">
+        <!-- Cart Panel -->
+        <div class="panel" style="height: fit-content;">
+          <div class="panel-header">
+            <span class="panel-title">Active Draft Cart</span>
+            <span class="badge badge-confirmed" id="cart-badge-count">0 Items</span>
           </div>
-          <div style="border-top: 1px solid var(--border); padding-top: 12px; margin-bottom: 16px;">
-            <div style="display: flex; justify-content: space-between; font-weight: 600;">
-              <span>Subtotal (est.):</span>
-              <span id="cart-subtotal">₹0.00</span>
+          <div class="panel-body">
+            <div id="cart-items-list" style="margin-bottom: 16px; max-height: 280px; overflow-y: auto;">
+              <p style="color: var(--text-muted); font-size: 13px;">Cart is empty. Add parts from catalogue.</p>
             </div>
-            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Final 18% GST and grand total calculated by server.</div>
+            <div style="border-top: 1px solid var(--border); padding-top: 14px; margin-bottom: 16px;">
+              <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 15px;">
+                <span>Subtotal (est.):</span>
+                <span id="cart-subtotal" style="color: var(--primary);">₹0.00</span>
+              </div>
+              <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">
+                18% GST (ROUND_HALF_UP) calculated by server on submit.
+              </div>
+            </div>
+            <button id="btn-create-order" class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="submitDraftOrder()" disabled>
+              Create DRAFT Order
+            </button>
           </div>
-          <button id="btn-create-order" class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="submitDraftOrder()" disabled>
-            Create DRAFT Order
-          </button>
         </div>
 
-        <!-- Orders Table -->
+        <!-- Orders Table Panel -->
         <div class="table-container">
-          <div style="padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="font-size: 16px;">Recent Orders</h3>
+          <div style="padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: #fafafa;">
+            <h3 style="font-size: 15px; font-weight: 700;">Order Registry</h3>
             <div style="display: flex; gap: 8px;">
               <select id="orders-status-filter" class="select-field" onchange="loadOrders()">
                 <option value="">All Statuses</option>
@@ -488,12 +736,12 @@
                 <th>Subtotal</th>
                 <th>GST (18%)</th>
                 <th>Grand Total</th>
-                <th>Date</th>
+                <th>Created</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody id="orders-tbody">
-              <tr><td colspan="8" style="text-align: center; color: var(--text-muted);">Loading orders...</td></tr>
+              <tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 30px;">Loading orders...</td></tr>
             </tbody>
           </table>
         </div>
@@ -506,48 +754,55 @@
         <div class="chat-window">
           <div class="chat-header">
             <div>
-              <strong>DealerDesk Conversational Assistant</strong>
-              <div style="font-size: 12px; color: var(--text-muted);">Grounded in PostgreSQL • Real Tool Calling • Untrusted Description Guard</div>
+              <div style="font-weight: 700; font-size: 14px;">GenAI Dealer Assistant</div>
+              <div style="font-size: 11.5px; color: var(--text-muted);">Grounded in PostgreSQL • Real Tool Calling • Untrusted Description Guard</div>
             </div>
-            <span class="badge badge-stock">Live Grounding Active</span>
+            <span class="badge badge-stock-in"><span class="status-dot"></span> Live Tool Loop</span>
           </div>
           <div class="chat-messages" id="chat-messages">
             <div class="chat-msg msg-bot">
-              Hello! I am your AI parts assistant. I can search the catalogue, check live inventory stock and pricing, and create draft orders directly for your dealership. How can I assist you today?
+              Hello! I am your AI parts ordering assistant. I can search our 600 catalogue parts, query live inventory stock in PostgreSQL, and create draft orders directly for your dealership. How can I help you today?
             </div>
           </div>
           <div class="chat-input-bar">
-            <input type="text" id="chat-input" class="input-field" placeholder="Ask e.g. 'Do you have brake pads for a Duke 390?' or 'Create draft order for BRK-1044'..." onkeydown="if(event.key==='Enter') sendChatMessage()">
-            <button class="btn btn-primary" onclick="sendChatMessage()">Send</button>
+            <input type="text" id="chat-input" class="input-field" placeholder="Ask e.g. 'Find brake pads for a Duke 390' or 'Check stock for BRK-1044'..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+            <button class="btn btn-primary" onclick="sendChatMessage()">Send Prompt</button>
           </div>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 16px;">
-          <div class="table-container" style="padding: 16px;">
-            <h4 style="margin-bottom: 8px;">Try Prompt Chips</h4>
-            <div style="display: flex; flex-direction: column; gap: 6px;">
-              <button class="btn btn-secondary btn-sm" style="text-align: left;" onclick="setChatPrompt('Find brake pads for a Bajaj Pulsar 150')">
+          <div class="panel">
+            <div class="panel-header">
+              <span class="panel-title">Quick Prompt Chips</span>
+            </div>
+            <div class="panel-body" style="display: flex; flex-direction: column; gap: 8px;">
+              <button class="btn btn-secondary btn-sm" style="text-align: left; justify-content: flex-start;" onclick="setChatPrompt('Find brake pads for a Bajaj Pulsar 150')">
                 🔍 "Find brake pads for Pulsar 150"
               </button>
-              <button class="btn btn-secondary btn-sm" style="text-align: left;" onclick="setChatPrompt('Do you have BRK-1044 in stock?')">
+              <button class="btn btn-secondary btn-sm" style="text-align: left; justify-content: flex-start;" onclick="setChatPrompt('Do you have BRK-1044 in stock?')">
                 📦 "Do you have BRK-1044 in stock?"
               </button>
-              <button class="btn btn-secondary btn-sm" style="text-align: left;" onclick="setChatPrompt('Create draft order for BRK-1044 quantity 2')">
+              <button class="btn btn-secondary btn-sm" style="text-align: left; justify-content: flex-start;" onclick="setChatPrompt('Create draft order for BRK-1044 quantity 2')">
                 🛒 "Create draft order for BRK-1044"
               </button>
-              <button class="btn btn-secondary btn-sm" style="text-align: left;" onclick="setChatPrompt('Do you have brake pads?')">
+              <button class="btn btn-secondary btn-sm" style="text-align: left; justify-content: flex-start;" onclick="setChatPrompt('Do you have brake pads?')">
                 ❓ "Do you have brake pads?" (Ambiguity test)
               </button>
             </div>
           </div>
 
-          <div class="table-container" style="padding: 16px;">
-            <h4 style="margin-bottom: 8px;">Grounding & Safety Rules</h4>
-            <ul style="font-size: 12px; color: var(--text-muted); line-height: 1.6; padding-left: 16px;">
-              <li>Prices and stock are queried in real-time from PostgreSQL.</li>
-              <li>Catalogue descriptions are treated as data, never instructions.</li>
-              <li>Assistant creates <strong>DRAFT</strong> orders only; cannot confirm or oversell.</li>
-            </ul>
+          <div class="panel">
+            <div class="panel-header">
+              <span class="panel-title">Grounding Guardrails</span>
+            </div>
+            <div class="panel-body">
+              <ul style="font-size: 12px; color: var(--text-muted); line-height: 1.7; padding-left: 18px;">
+                <li>Prices & stock are queried live via <code>check_stock</code>.</li>
+                <li>Catalogue descriptions are treated as data, never instructions.</li>
+                <li>Assistant creates <strong>DRAFT</strong> orders only; cannot confirm or cancel.</li>
+                <li>Non-existent SKUs are removed from citations.</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -555,14 +810,12 @@
 
     <!-- TAB 5: FORECASTING & REORDER -->
     <section id="tab-reorder" class="tab-content">
-      <div style="margin-bottom: 16px; background: #ffffff; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius);">
-        <h3 style="margin-bottom: 4px;">4-Week Demand Forecast & Safety Stock Reorder</h3>
-        <p style="font-size: 13px; color: var(--text-muted);">
-          Deterministic inventory replenishment formula: 
-          <code>safety_stock = ceil(1.65 × σ × √L)</code>, 
-          <code>reorder_point = lead_time_demand + safety_stock</code>, 
-          <code>reorder_qty = max(0, ceil(reorder_point - current_stock))</code>.
-        </p>
+      <div class="callout-box">
+        <strong>Deterministic Safety Stock & Reorder Formula (Contract §10.2):</strong><br>
+        <code>safety_stock = ceil(1.65 × σ × √L)</code> &nbsp;|&nbsp; 
+        <code>reorder_point = lead_time_demand + safety_stock</code> &nbsp;|&nbsp; 
+        <code>reorder_qty = max(0, ceil(reorder_point - current_stock))</code><br>
+        Evaluated on live inventory quantities from PostgreSQL against 160 ML forecast SKU-week predictions.
       </div>
 
       <div class="table-container">
@@ -571,16 +824,17 @@
             <tr>
               <th>SKU</th>
               <th>Live Stock</th>
-              <th>Lead Time (Wks)</th>
+              <th>Lead Time (L)</th>
               <th>Lead Time Demand</th>
               <th>Safety Stock</th>
               <th>Reorder Point</th>
-              <th>Recommended Reorder Qty</th>
-              <th>Status</th>
+              <th>Suggested Reorder</th>
+              <th>Urgency Status</th>
+              <th>Quick Action</th>
             </tr>
           </thead>
           <tbody id="reorder-tbody">
-            <tr><td colspan="8" style="text-align: center; color: var(--text-muted);">Loading reorder suggestions...</td></tr>
+            <tr><td colspan="9" style="text-align: center; color: var(--text-muted); padding: 30px;">Loading reorder suggestions...</td></tr>
           </tbody>
         </table>
       </div>
@@ -588,22 +842,28 @@
 
     <!-- TAB 6: SUPPLIER SYNC -->
     <section id="tab-supplier" class="tab-content">
-      <div style="background: #ffffff; padding: 24px; border: 1px solid var(--border); border-radius: var(--radius); max-width: 800px; margin: 0 auto;">
-        <h3 style="margin-bottom: 8px;">Supplier Catalogue Synchronisation Hub</h3>
-        <p style="color: var(--text-muted); margin-bottom: 20px;">
-          Pulls product catalogue updates from the supplier API. Implements cursor-based pagination, HTTP 429 <code>Retry-After</code> handling, bounded 5xx retries, atomic rollbacks on full-feed failure, and strictly preserves local warehouse stock quantities.
-        </p>
-        <button id="btn-run-sync" class="btn btn-primary" onclick="triggerSupplierSync()">
-          🔄 Trigger Full Supplier Sync
-        </button>
-        <div id="sync-status-msg" style="margin-top: 16px; font-size: 13px;"></div>
-        <div id="sync-results-box" style="margin-top: 20px; display: none;">
-          <h4 style="margin-bottom: 10px;">Sync Summary Result:</h4>
-          <div class="grid-4" style="margin-bottom: 0;">
-            <div class="stat-card" style="padding: 12px;"><div class="stat-title">Created</div><div class="stat-value" id="sync-res-created">0</div></div>
-            <div class="stat-card" style="padding: 12px;"><div class="stat-title">Updated</div><div class="stat-value" id="sync-res-updated">0</div></div>
-            <div class="stat-card" style="padding: 12px;"><div class="stat-title">Unchanged</div><div class="stat-value" id="sync-res-unchanged">0</div></div>
-            <div class="stat-card" style="padding: 12px;"><div class="stat-title">Requests Made</div><div class="stat-value" id="sync-res-requests">0</div></div>
+      <div class="panel" style="max-width: 840px; margin: 0 auto;">
+        <div class="panel-header">
+          <span class="panel-title">Supplier Catalogue Synchronisation Hub</span>
+          <span class="badge badge-stock-in"><span class="status-dot"></span> Port 8099 Online</span>
+        </div>
+        <div class="panel-body">
+          <p style="color: var(--text-muted); margin-bottom: 20px; line-height: 1.6;">
+            Pulls product catalogue updates from the external supplier API. Implements cursor-based pagination, HTTP 429 <code>Retry-After</code> handling, bounded 5xx retries, atomic abort on full-feed failure (502), and strictly guarantees <strong>zero mutation of warehouse inventory quantities</strong>.
+          </p>
+          <button id="btn-run-sync" class="btn btn-primary" onclick="triggerSupplierSync()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg>
+            Trigger Full Supplier Sync
+          </button>
+          <div id="sync-status-msg" style="margin-top: 16px; font-size: 13px;"></div>
+          <div id="sync-results-box" style="margin-top: 20px; display: none;">
+            <h4 style="margin-bottom: 12px; font-size: 13.5px;">Sync Operation Results:</h4>
+            <div class="kpi-grid" style="margin-bottom: 0;">
+              <div class="kpi-card" style="padding: 14px;"><div class="kpi-title">Created</div><div class="kpi-value" id="sync-res-created">0</div></div>
+              <div class="kpi-card" style="padding: 14px;"><div class="kpi-title">Updated</div><div class="kpi-value" id="sync-res-updated">0</div></div>
+              <div class="kpi-card" style="padding: 14px;"><div class="kpi-title">Unchanged</div><div class="kpi-value" id="sync-res-unchanged">0</div></div>
+              <div class="kpi-card" style="padding: 14px;"><div class="kpi-title">Requests Made</div><div class="kpi-value" id="sync-res-requests">0</div></div>
+            </div>
           </div>
         </div>
       </div>
@@ -614,8 +874,8 @@
   <div id="order-modal" class="modal-backdrop">
     <div class="modal-box">
       <div class="modal-header">
-        <h3 id="modal-order-title">Order Details</h3>
-        <button style="border: none; background: none; font-size: 20px; cursor: pointer;" onclick="closeOrderModal()">&times;</button>
+        <h3 id="modal-order-title" style="font-size: 16px; font-weight: 700;">Order Details</h3>
+        <button style="border: none; background: none; font-size: 22px; cursor: pointer; color: var(--text-muted);" onclick="closeOrderModal()">&times;</button>
       </div>
       <div class="modal-body" id="modal-order-body">
         <!-- Injected -->
@@ -637,8 +897,12 @@
     function switchTab(tabName) {
       document.querySelectorAll(".nav-tab").forEach(t => t.classList.remove("active"));
       document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
-      event.target.classList.add("active");
-      document.getElementById("tab-" + tabName).classList.add("active");
+      
+      const targetBtn = Array.from(document.querySelectorAll(".nav-tab")).find(b => b.getAttribute("onclick")?.includes(tabName));
+      if (targetBtn) targetBtn.classList.add("active");
+      
+      const targetTab = document.getElementById("tab-" + tabName);
+      if (targetTab) targetTab.classList.add("active");
 
       if (tabName === "catalogue") loadProducts(currentProductPage);
       if (tabName === "orders") loadOrders();
@@ -667,7 +931,11 @@
       activeDealerId = parseInt(document.getElementById("active-dealer-select").value);
       const d = dealersList.find(x => x.id === activeDealerId);
       if (d) {
-        document.getElementById("active-dealer-info").innerHTML = `City: ${d.city} • GSTIN: ${d.gstin} • Credit Limit: ₹${d.credit_limit}`;
+        document.getElementById("active-dealer-info").innerHTML = `
+          <strong>City:</strong> ${d.city} &nbsp;|&nbsp; 
+          <strong>GSTIN:</strong> ${d.gstin} &nbsp;|&nbsp; 
+          <strong>Credit Limit:</strong> ₹${parseFloat(d.credit_limit).toLocaleString('en-IN', {minimumFractionDigits: 2})}
+        `;
       }
     }
 
@@ -688,26 +956,38 @@
         const tbody = document.getElementById("products-tbody");
 
         if (!data.results || data.results.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted);">No products found matching filters.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 30px;">No products found matching filters.</td></tr>`;
           return;
         }
 
-        tbody.innerHTML = data.results.map(p => `
-          <tr>
-            <td><strong>${p.sku}</strong></td>
-            <td>${p.name}</td>
-            <td><span class="badge badge-draft">${p.category}</span></td>
-            <td>${p.brand}</td>
-            <td>${p.vehicle_fitment}</td>
-            <td>₹${p.price}</td>
-            <td><span class="badge ${p.stock > 10 ? 'badge-stock' : 'badge-low'}">${p.stock} units</span></td>
-            <td>
-              <button class="btn btn-secondary btn-sm" onclick="addToCart('${p.sku}', '${p.name.replace(/'/g, "\\'")}', '${p.price}', ${p.stock})">
-                + Add to Cart
-              </button>
-            </td>
-          </tr>
-        `).join("");
+        tbody.innerHTML = data.results.map(p => {
+          let stockClass = "badge-stock-in";
+          let stockLabel = `${p.stock} units`;
+          if (p.stock === 0) {
+            stockClass = "badge-stock-out";
+            stockLabel = "Out of stock";
+          } else if (p.stock < 15) {
+            stockClass = "badge-stock-low";
+            stockLabel = `Low: ${p.stock}`;
+          }
+
+          return `
+            <tr>
+              <td><span style="font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--primary);">${p.sku}</span></td>
+              <td><strong>${p.name}</strong></td>
+              <td><span class="badge badge-draft">${p.category}</span></td>
+              <td>${p.brand}</td>
+              <td><span style="color: var(--text-muted); font-size: 12px;">${p.vehicle_fitment}</span></td>
+              <td><strong>₹${parseFloat(p.price).toFixed(2)}</strong></td>
+              <td><span class="badge ${stockClass}"><span class="status-dot"></span> ${stockLabel}</span></td>
+              <td>
+                <button class="btn btn-secondary btn-sm" onclick="addToCart('${p.sku}', '${p.name.replace(/'/g, "\\'")}', '${p.price}', ${p.stock})">
+                  + Add to Cart
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join("");
 
         document.getElementById("product-pagination-info").innerText = `Showing page ${page} of ${Math.ceil(data.count / 15)} (${data.count} parts total)`;
         document.getElementById("btn-prev-page").disabled = !data.previous;
@@ -750,7 +1030,10 @@
     }
 
     function renderCart() {
-      document.getElementById("cart-count").innerText = cart.reduce((a, b) => a + b.quantity, 0);
+      const totalCount = cart.reduce((a, b) => a + b.quantity, 0);
+      document.getElementById("cart-count").innerText = totalCount;
+      document.getElementById("cart-badge-count").innerText = `${totalCount} Items`;
+      
       const list = document.getElementById("cart-items-list");
       const btn = document.getElementById("btn-create-order");
 
@@ -765,14 +1048,15 @@
       list.innerHTML = cart.map(it => {
         subtotal += it.price * it.quantity;
         return `
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 13px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 13px; background: #f8fafc; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border);">
             <div>
-              <strong>${it.sku}</strong>
-              <div style="font-size: 11px; color: var(--text-muted);">${it.name.substring(0, 25)}...</div>
+              <strong style="color: var(--primary);">${it.sku}</strong>
+              <div style="font-size: 11.5px; color: var(--text-muted);">${it.name.substring(0, 24)}...</div>
+              <div style="font-size: 11px; font-weight: 600;">₹${it.price.toFixed(2)} each</div>
             </div>
             <div style="display: flex; align-items: center; gap: 6px;">
-              <input type="number" min="1" value="${it.quantity}" style="width: 50px; padding: 4px;" class="input-field" onchange="updateCartQty('${it.sku}', parseInt(this.value))">
-              <button class="btn btn-danger btn-sm" onclick="updateCartQty('${it.sku}', 0)">&times;</button>
+              <input type="number" min="1" value="${it.quantity}" style="width: 52px; padding: 4px;" class="input-field" onchange="updateCartQty('${it.sku}', parseInt(this.value))">
+              <button class="btn btn-danger btn-sm" style="padding: 2px 7px;" onclick="updateCartQty('${it.sku}', 0)">&times;</button>
             </div>
           </div>
         `;
@@ -787,7 +1071,7 @@
       const items = cart.map(it => ({ sku: it.sku, quantity: it.quantity }));
       const btn = document.getElementById("btn-create-order");
       btn.disabled = true;
-      btn.innerText = "Creating...";
+      btn.innerText = "Creating DRAFT Order...";
 
       try {
         const res = await fetch("/api/orders/", {
@@ -799,7 +1083,7 @@
         if (res.status === 201) {
           cart = [];
           renderCart();
-          alert(`Draft order ${data.order_number} created successfully! Subtotal: ₹${data.subtotal}, Grand Total: ₹${data.grand_total}`);
+          alert(`Draft order ${data.order_number} created successfully!\nSubtotal: ₹${data.subtotal}\n18% GST: ₹${data.tax_total}\nGrand Total: ₹${data.grand_total}`);
           loadOrders();
         } else {
           alert(`Order creation failed: ${data.error?.message || 'Error'}`);
@@ -823,13 +1107,13 @@
         const tbody = document.getElementById("orders-tbody");
 
         if (!data.results || data.results.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted);">No orders found.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 30px;">No orders found.</td></tr>`;
           return;
         }
 
         tbody.innerHTML = data.results.map(o => `
           <tr>
-            <td><strong>${o.order_number}</strong></td>
+            <td><strong style="font-family: 'JetBrains Mono', monospace;">${o.order_number}</strong></td>
             <td>Dealer #${o.dealer_id}</td>
             <td><span class="badge badge-${o.status.toLowerCase()}">${o.status}</span></td>
             <td>₹${o.subtotal}</td>
@@ -864,7 +1148,7 @@
         }
 
         document.getElementById("modal-order-body").innerHTML = `
-          <div style="margin-bottom: 16px;">
+          <div style="margin-bottom: 16px; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
             <div><strong>Status:</strong> <span class="badge badge-${o.status.toLowerCase()}">${o.status}</span></div>
             <div><strong>Dealer ID:</strong> ${o.dealer_id}</div>
             <div><strong>Created:</strong> ${new Date(o.created_at).toLocaleString()}</div>
@@ -882,19 +1166,19 @@
             <tbody>
               ${o.items.map(it => `
                 <tr>
-                  <td>${it.sku}</td>
+                  <td><code style="font-weight: 700; color: var(--primary);">${it.sku}</code></td>
                   <td>${it.name}</td>
                   <td>${it.quantity}</td>
                   <td>₹${it.unit_price}</td>
-                  <td>₹${it.line_total}</td>
+                  <td><strong>₹${it.line_total}</strong></td>
                 </tr>
               `).join("")}
             </tbody>
           </table>
-          <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-size: 13px;">
-            <div style="display: flex; justify-content: space-between;"><span>Subtotal:</span><span>₹${o.subtotal}</span></div>
-            <div style="display: flex; justify-content: space-between;"><span>GST (18% rounded per line):</span><span>₹${o.tax_total}</span></div>
-            <div style="display: flex; justify-content: space-between; font-weight: 700; margin-top: 4px; border-top: 1px solid var(--border); padding-top: 4px;"><span>Grand Total:</span><span>₹${o.grand_total}</span></div>
+          <div style="background: #f8fafc; padding: 14px; border-radius: 8px; font-size: 13px; border: 1px solid var(--border);">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;"><span>Subtotal:</span><span>₹${o.subtotal}</span></div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;"><span>GST (18% rounded per line):</span><span>₹${o.tax_total}</span></div>
+            <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 15px; margin-top: 6px; border-top: 1px solid var(--border); padding-top: 6px; color: var(--primary);"><span>Grand Total:</span><span>₹${o.grand_total}</span></div>
           </div>
         `;
 
@@ -946,20 +1230,17 @@
 
         let toolBadges = "";
         if (data.tool_calls && data.tool_calls.length > 0) {
-          toolBadges = data.tool_calls.map(tc => `<span class="tool-badge">⚙ ${tc.name}</span>`).join(" ");
+          toolBadges = data.tool_calls.map(tc => `<span class="tool-badge">⚙ ${tc.tool || tc.name}</span>`).join(" ");
         }
         let skuBadges = "";
         if (data.cited_skus && data.cited_skus.length > 0) {
-          skuBadges = data.cited_skus.map(s => `<span class="sku-badge">SKU: ${s}</span>`).join(" ");
+          skuBadges = data.cited_skus.map(s => `<span class="sku-badge" onclick="document.getElementById('cat-search').value='${s}'; switchTab('catalogue');">📦 SKU: ${s}</span>`).join(" ");
         }
 
         box.innerHTML += `
           <div class="chat-msg msg-bot">
             ${data.reply.replace(/\n/g, '<br>')}
-            <div class="msg-meta">
-              ${toolBadges}
-              ${skuBadges}
-            </div>
+            ${(toolBadges || skuBadges) ? `<div class="msg-meta">${toolBadges} ${skuBadges}</div>` : ''}
           </div>
         `;
         box.scrollTop = box.scrollHeight;
@@ -982,19 +1263,32 @@
 
         tbody.innerHTML = (data.results || []).map(r => {
           const needsReorder = r.reorder_qty > 0;
+          let urgencyClass = "badge-stock-in";
+          let urgencyText = "STOCK ADEQUATE";
+          if (r.current_stock === 0) {
+            urgencyClass = "badge-stock-out";
+            urgencyText = "CRITICAL OUT OF STOCK";
+          } else if (needsReorder) {
+            urgencyClass = "badge-stock-low";
+            urgencyText = "REORDER NEEDED";
+          }
+
           return `
             <tr>
-              <td><strong>${r.sku}</strong></td>
-              <td>${r.current_stock}</td>
+              <td><span style="font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--primary);">${r.sku}</span></td>
+              <td><strong>${r.current_stock}</strong></td>
               <td>${r.lead_time_weeks} wks</td>
               <td>${r.lead_time_demand}</td>
               <td>${r.safety_stock}</td>
               <td>${r.reorder_point}</td>
-              <td><strong>${r.reorder_qty}</strong></td>
+              <td><strong style="font-size: 14px; color: ${needsReorder ? 'var(--danger-text)' : 'var(--text-main)'};">${r.reorder_qty}</strong></td>
+              <td><span class="badge ${urgencyClass}"><span class="status-dot"></span> ${urgencyText}</span></td>
               <td>
-                <span class="badge ${needsReorder ? 'badge-cancelled' : 'badge-delivered'}">
-                  ${needsReorder ? 'REORDER NEEDED' : 'STOCK ADEQUATE'}
-                </span>
+                ${needsReorder ? `
+                  <button class="btn btn-primary btn-sm" onclick="addToCart('${r.sku}', 'Reorder SKU ${r.sku}', 0, ${r.current_stock}); switchTab('orders');">
+                    + Order ${r.reorder_qty}
+                  </button>
+                ` : `<span style="font-size: 11.5px; color: var(--text-subtle);">Optimal</span>`}
               </td>
             </tr>
           `;
@@ -1012,27 +1306,27 @@
 
       btn.disabled = true;
       btn.innerText = "Syncing with Supplier API...";
-      msg.innerText = "Paginating supplier catalog feed, handling rate limits & retries...";
+      msg.innerText = "Fetching paginated catalogue feed, handling rate limits & retries...";
       box.style.display = "none";
 
       try {
         const res = await fetch("/api/sync/supplier/", { method: "POST" });
         const data = await res.json();
         if (res.ok) {
-          msg.innerHTML = `<span style="color: var(--success); font-weight: 600;">✓ Sync completed successfully!</span>`;
+          msg.innerHTML = `<span style="color: var(--success-text); font-weight: 700;">✓ Sync completed successfully!</span>`;
           document.getElementById("sync-res-created").innerText = data.created;
           document.getElementById("sync-res-updated").innerText = data.updated;
           document.getElementById("sync-res-unchanged").innerText = data.unchanged;
           document.getElementById("sync-res-requests").innerText = data.requests_made;
           box.style.display = "block";
         } else {
-          msg.innerHTML = `<span style="color: var(--danger); font-weight: 600;">✗ Sync failed: ${data.error?.message || 'Error 502'}</span>`;
+          msg.innerHTML = `<span style="color: var(--danger-text); font-weight: 700;">✗ Sync failed: ${data.error?.message || 'Error 502'}</span>`;
         }
       } catch (e) {
-        msg.innerHTML = `<span style="color: var(--danger); font-weight: 600;">✗ Network error: ${e.message}</span>`;
+        msg.innerHTML = `<span style="color: var(--danger-text); font-weight: 700;">✗ Network error: ${e.message}</span>`;
       } finally {
         btn.disabled = false;
-        btn.innerText = "🔄 Trigger Full Supplier Sync";
+        btn.innerText = "Trigger Full Supplier Sync";
       }
     }
 

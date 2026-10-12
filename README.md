@@ -1,4 +1,4 @@
-# VIKMO DealerDesk — AI / ML Intern Submission
+# VIKMO DealerDesk — AI/ML Intern Track
 
 > **Selected Track:** `AI / ML Intern` (Track value: `aiml`)  
 > **Submission Repository:** Public GitHub Repository  
