@@ -115,15 +115,31 @@ def rule_based_fallback(dealer_id: int, message: str) -> Dict[str, Any]:
             "actions": [],
         }
 
-    # 5. Catalogue Overview / Categories Inquiries
-    if re.search(r"\b(categories|what categories|what parts do you sell|what do you supply)\b", msg, re.I):
-        cat_list = sorted([c for c in set(Product.objects.values_list("category", flat=True)) if c])
+    # 5. Catalogue Overview / Available Products Inquiries
+    if re.search(r"\b(all available products|available products|all products|show products|list products|what products|what parts do you sell|what do you supply|catalogue|catalog|show parts|available items|what do you have)\b", msg, re.I):
+        tool_args = {"query": "", "limit": 4}
+        tool_res = AVAILABLE_TOOLS["search_parts"](**tool_args)
+        tool_calls.append({"tool": "search_parts", "name": "search_parts", "arguments": tool_args, "result": tool_res})
+
+        lines = []
+        for p in tool_res:
+            cited_skus.append(p["sku"])
+            stk_str = f"{p['stock']} in stock" if p['stock'] > 0 else "out of stock"
+            lines.append(f"• **{p['name']}** (`{p['sku']}`) — **₹{p['price']}** | *{p['vehicle_fitment']}* ({stk_str})")
+
         reply = (
-            "We supply 600 genuine and aftermarket parts across these primary categories:\n"
-            + "\n".join(f"• **{c}**" for c in cat_list)
-            + "\n\nYou can search for any category or vehicle fitment directly!"
+            "Our central distribution catalogue contains **600 active parts** across 11 categories "
+            "(Brakes, Lighting & Electrical, Drivetrain, Filters, Engine & Oils, Body & Styling, Controls, Tyres, etc.).\n\n"
+            "Here is a selection of top genuine parts currently available in warehouse stock:\n"
+            + "\n".join(lines)
+            + "\n\n💡 *Tip: You can browse all 600 parts across 50 pages in the **Catalogue** tab, or ask me for specific components or vehicle fitments (e.g. 'Find brake pads for Pulsar 150')!*"
         )
-        return {"reply": reply, "cited_skus": [], "tool_calls": [], "actions": []}
+        return {
+            "reply": reply,
+            "cited_skus": extract_cited_skus(reply, cited_skus),
+            "tool_calls": tool_calls,
+            "actions": [],
+        }
 
     # 6. Check for Order Creation Intent
     order_match = re.search(r"\b(order|draft|create order|buy|purchase|place order)\b", msg, re.I)

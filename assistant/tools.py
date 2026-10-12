@@ -8,7 +8,8 @@ import re
 STOPWORDS = {
     "what", "are", "the", "do", "you", "have", "can", "tell", "me", "about",
     "for", "a", "an", "is", "in", "of", "to", "with", "and", "or", "any",
-    "some", "please", "parts", "part", "i", "need", "want", "looking", "show"
+    "some", "please", "parts", "part", "i", "need", "want", "looking", "show",
+    "all", "available", "products", "product", "items", "item", "list", "catalogue", "catalog", "give", "get"
 }
 
 
@@ -24,6 +25,7 @@ def tool_search_parts(query: str = "", vehicle: str = None, category: str = None
         c_clean = str(category).strip()
         qs = qs.filter(category__icontains=c_clean)
 
+    clean_words = []
     if query and str(query).strip():
         clean_words = [
             w for w in re.findall(r"[a-zA-Z0-9]+", str(query).lower())
