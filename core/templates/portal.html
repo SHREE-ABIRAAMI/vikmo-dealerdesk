@@ -219,16 +219,19 @@
     .brand-meta {
       display: flex;
       flex-direction: column;
+      white-space: nowrap;
+      justify-content: center;
     }
     .brand-name {
       font-family: 'Outfit', sans-serif;
       font-weight: 800;
-      font-size: 19px;
-      letter-spacing: -0.5px;
+      font-size: 17px;
+      letter-spacing: -0.4px;
       display: flex;
       align-items: center;
       gap: 8px;
       line-height: 1.2;
+      white-space: nowrap;
     }
     .brand-badge {
       background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(99,102,241,0.25));
@@ -240,11 +243,16 @@
       border: 1px solid var(--border-subtle);
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      white-space: nowrap;
     }
     .brand-sub {
-      font-size: 11px;
+      font-size: 10.5px;
       color: var(--text-muted);
       font-weight: 500;
+      white-space: nowrap;
+    }
+    @media (max-width: 1320px) {
+      .brand-sub { display: none; }
     }
 
     /* Top Nav Tabs */
