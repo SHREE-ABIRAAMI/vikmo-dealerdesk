@@ -10372,13 +10372,16 @@
               <strong>${r.reorder_qty}</strong>
             </td>
             <td><span class="badge ${urgencyClass}"><span class="status-dot"></span> ${urgencyText}</span></td>
-            <td style="text-align: right;">
+            <td style="text-align: right; white-space: nowrap;">
+              <button class="btn btn-secondary btn-sm" onclick="openSkuForecastModal('${r.sku}')" title="View 4-Week ML Demand Forecast" style="margin-right: 6px;">
+                📊 Forecast
+              </button>
               ${needsReorder ? `
                 <button class="btn btn-primary btn-sm" onclick="addToCart('${r.sku}', '${escapeHtml(prodName)}', ${prodPrice}, ${r.current_stock}, ${r.reorder_qty}); switchTab('orders');">
                   + Order ${r.reorder_qty}
                 </button>
               ` : `
-                <button class="btn btn-secondary btn-sm" onclick="openSkuForecastModal('${r.sku}')">Forecast</button>
+                <span class="badge badge-stock-in" style="font-size: 11px;">Stock Optimal</span>
               `}
             </td>
           </tr>
