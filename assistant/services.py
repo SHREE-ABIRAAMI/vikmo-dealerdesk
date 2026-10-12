@@ -44,43 +44,110 @@ def extract_cited_skus(text: str, extra_skus: List[str] = None) -> List[str]:
 
 
 def rule_based_fallback(dealer_id: int, message: str) -> Dict[str, Any]:
-    """Deterministic, grounded fallback when external LLM API keys are not provided."""
+    """Deterministic, grounded conversational engine when external LLM API keys are not provided."""
+    from dealers.models import Dealer
+    from orders.models import Order
+    from products.models import Product
+
     msg = message.strip()
     tool_calls = []
     actions = []
     cited_skus = []
 
-    # Check for greetings
-    if re.search(r"\b(hello|hi|hey|help|what can you do|who are you)\b", msg, re.I):
+    # 1. Greetings & Capabilities
+    if re.search(r"\b(hello|hi|hey|greetings|help|who are you|what can you do)\b", msg, re.I):
         reply = (
-            "Hello! I am your DealerDesk Assistant. I can help you search our 600-part catalogue, "
-            "check live stock and pricing, and create draft orders for your dealership. "
-            "What parts are you looking for today?"
+            "Hello! I am your VIKMO DealerDesk AI Assistant. I can help you with:\n"
+            "• **Catalogue Search:** 'Find brake pads for KTM Duke 390' or 'Parts for Pulsar 150'\n"
+            "• **Stock & Price Checks:** 'Check stock for BRK-1044' or 'Price of CHN-1001'\n"
+            "• **Draft Orders:** 'Create draft order for 2 units of BRK-1044'\n"
+            "• **Account & Orders:** 'What is my credit limit?' or 'Status of ORD-20261012-0001'\n\n"
+            "How can I assist your dealership today?"
         )
         return {"reply": reply, "cited_skus": [], "tool_calls": [], "actions": []}
 
-    # Check for order creation intent
-    order_match = re.search(r"\b(order|draft|create order|buy)\b", msg, re.I)
+    # 2. Permission Safeguards: Confirmation / Cancellation inquiries
+    if re.search(r"\b(confirm|cancel|dispatch|deliver)\b.*\border\b|\bcan you confirm\b", msg, re.I):
+        reply = (
+            "As an AI Assistant, I am strictly restricted to creating **DRAFT** orders only. "
+            "Order confirmation reserves physical warehouse stock and applies financial locks, "
+            "so it must be authorized directly through the Orders dashboard or via "
+            "`POST /api/orders/{order_number}/confirm/`."
+        )
+        return {"reply": reply, "cited_skus": [], "tool_calls": [], "actions": []}
+
+    # 3. Dealer Account & Credit Limit Inquiries
+    if re.search(r"\b(credit limit|my account|dealer info|who am i|balance|gstin)\b", msg, re.I):
+        try:
+            dealer = Dealer.objects.get(id=dealer_id)
+            reply = (
+                f"Your active dealership account is **{dealer.name}** (`{dealer.dealer_code}`).\n"
+                f"• Location: {dealer.city}\n"
+                f"• Approved Credit Limit: ₹{float(dealer.credit_limit):,.2f}\n"
+                f"• GSTIN: `{dealer.gstin}`\n"
+                f"• Contact: {dealer.phone} | {dealer.email}"
+            )
+        except Dealer.DoesNotExist:
+            reply = f"Dealer #{dealer_id} was not found in the database."
+        return {"reply": reply, "cited_skus": [], "tool_calls": [], "actions": []}
+
+    # 4. Order Status Inquiries by Order Number
+    ord_match = re.search(r"(ORD-\d{8}-\d{4})", msg, re.I)
+    if ord_match:
+        ord_no = ord_match.group(1).upper()
+        try:
+            ord_obj = Order.objects.prefetch_related("items").get(order_number=ord_no)
+            item_summary = ", ".join(f"{it.name} (x{it.quantity})" for it in ord_obj.items.all()[:3])
+            reply = (
+                f"Order **{ord_obj.order_number}** is currently in **{ord_obj.status}** status.\n"
+                f"• Dealer: Dealer #{ord_obj.dealer_id}\n"
+                f"• Items: {item_summary}\n"
+                f"• Grand Total: ₹{ord_obj.grand_total} (includes 18% GST: ₹{ord_obj.tax_total})"
+            )
+            for it in ord_obj.items.all():
+                cited_skus.append(it.sku)
+        except Order.DoesNotExist:
+            reply = f"Order **{ord_no}** was not found in the order registry."
+        return {
+            "reply": reply,
+            "cited_skus": extract_cited_skus(reply, cited_skus),
+            "tool_calls": [],
+            "actions": [],
+        }
+
+    # 5. Catalogue Overview / Categories Inquiries
+    if re.search(r"\b(categories|what categories|what parts do you sell|what do you supply)\b", msg, re.I):
+        cat_list = sorted([c for c in set(Product.objects.values_list("category", flat=True)) if c])
+        reply = (
+            "We supply 600 genuine and aftermarket parts across these primary categories:\n"
+            + "\n".join(f"• **{c}**" for c in cat_list)
+            + "\n\nYou can search for any category or vehicle fitment directly!"
+        )
+        return {"reply": reply, "cited_skus": [], "tool_calls": [], "actions": []}
+
+    # 6. Check for Order Creation Intent
+    order_match = re.search(r"\b(order|draft|create order|buy|purchase|place order)\b", msg, re.I)
     skus_in_msg = SKU_PATTERN.findall(msg)
     if order_match and skus_in_msg:
-        sku = skus_in_msg[0]
+        sku = skus_in_msg[0].upper()
         qty_match = re.search(r"\b(?:qty|quantity|count)?\s*(\d+)\b", msg, re.I)
         qty = int(qty_match.group(1)) if qty_match else 1
         qty = max(1, qty)
 
         tool_args = {"dealer_id": dealer_id, "items": [{"sku": sku, "quantity": qty}]}
         tool_res = AVAILABLE_TOOLS["create_draft_order"](**tool_args)
-        tool_calls.append({"name": "create_draft_order", "arguments": tool_args})
+        tool_calls.append({"tool": "create_draft_order", "name": "create_draft_order", "arguments": tool_args, "result": tool_res})
 
         if "error" not in tool_res:
             ord_num = tool_res["order_number"]
             actions.append({"type": "draft_order_created", "order_number": ord_num})
             cited_skus.append(sku)
             reply = (
-                f"I have created draft order {ord_num} for {qty} unit(s) of {sku}. "
-                f"Order subtotal is ₹{tool_res['subtotal']}, GST (18%) is ₹{tool_res['tax_total']}, "
-                f"and grand total is ₹{tool_res['grand_total']}. "
-                f"Please note this order is in DRAFT status and awaits your confirmation."
+                f"I have created draft order **{ord_num}** for {qty} unit(s) of `{sku}`.\n"
+                f"• Subtotal: ₹{tool_res['subtotal']}\n"
+                f"• 18% GST: ₹{tool_res['tax_total']}\n"
+                f"• **Grand Total:** ₹{tool_res['grand_total']}\n\n"
+                f"This order is in **DRAFT** status and ready for review in your Orders tab."
             )
         else:
             reply = f"Could not create draft order: {tool_res['error']}"
@@ -92,21 +159,27 @@ def rule_based_fallback(dealer_id: int, message: str) -> Dict[str, Any]:
             "actions": actions,
         }
 
-    # Check for specific SKU stock/price lookup
-    if skus_in_msg and re.search(r"\b(stock|price|have|available|cost)\b", msg, re.I):
-        sku = skus_in_msg[0]
+    # 7. Direct SKU Inquiries (Stock, Price, Specifications)
+    if skus_in_msg:
+        sku = skus_in_msg[0].upper()
         tool_args = {"sku": sku}
         tool_res = AVAILABLE_TOOLS["check_stock"](**tool_args)
-        tool_calls.append({"name": "check_stock", "arguments": tool_args})
+        tool_calls.append({"tool": "check_stock", "name": "check_stock", "arguments": tool_args, "result": tool_res})
 
         if "error" not in tool_res:
             cited_skus.append(sku)
+            stock_val = tool_res['stock']
+            stock_status = f"✅ {stock_val} units in stock" if stock_val > 0 else "❌ Out of stock"
             reply = (
-                f"{tool_res['name']} ({sku}) is currently priced at ₹{tool_res['price']} "
-                f"with {tool_res['stock']} unit(s) available in stock."
+                f"**{tool_res['name']}** (`{sku}`)\n"
+                f"• Brand: {tool_res['brand']}\n"
+                f"• Vehicle Fitment: {tool_res['vehicle_fitment']}\n"
+                f"• Unit Price: **₹{tool_res['price']}** (excl. GST)\n"
+                f"• Warehouse Stock: {stock_status}\n\n"
+                f"Would you like me to create a draft order for this part?"
             )
         else:
-            reply = f"Product with SKU '{sku}' was not found in our catalogue."
+            reply = f"Product with SKU `{sku}` was not found in our catalogue."
 
         return {
             "reply": reply,
@@ -115,42 +188,63 @@ def rule_based_fallback(dealer_id: int, message: str) -> Dict[str, Any]:
             "actions": actions,
         }
 
-    # Check for vehicle fitment search (e.g. Pulsar 150, Duke 390, Dominar 400, Activa)
-    vehicle_match = re.search(
-        r"(Bajaj\s+Pulsar\s+\d+|Pulsar\s+\d+|KTM\s+Duke\s+\d+|Duke\s+\d+|Dominar\s+\d+|Bajaj\s+Dominar|TVS\s+Apache|Royal\s+Enfield\s+Classic|Activa)",
-        msg,
+    # 8. Vehicle Fitment Matching
+    vehicle_pattern = re.compile(
+        r"(Bajaj\s+Pulsar\s+\d+|Pulsar\s+\d+|Pulsar\s+NS200|KTM\s+Duke\s+\d+|Duke\s+\d+|Dominar\s+\d+|Bajaj\s+Dominar|"
+        r"TVS\s+Apache\s+RTR\s+\d+|Apache\s+\d+|Royal\s+Enfield\s+Classic\s+\d+|Classic\s+350|Hunter\s+350|Himalayan\s+\d+|"
+        r"Yamaha\s+MT-15|MT-15|Yamaha\s+R15|R15|Yamaha\s+FZ-S|FZ-S|Hero\s+Splendor|Splendor|Honda\s+Shine|Shine\s+125|"
+        r"Suzuki\s+Gixxer|Gixxer|Hero\s+Xtreme|Activa|Universal)",
         re.I,
     )
-    part_query = msg
-    vehicle = None
-    if vehicle_match:
-        vehicle = vehicle_match.group(1).strip()
-        part_query = re.sub(re.escape(vehicle), "", msg, flags=re.I).strip()
-        part_query = re.sub(r"\b(do you have|find|search|parts for|for a|for|in stock)\b", "", part_query, flags=re.I).strip()
-    else:
-        part_query = re.sub(r"\b(do you have|find|search|parts for|in stock)\b", "", msg, flags=re.I).strip()
+    vehicle_match = vehicle_pattern.search(msg)
+    vehicle = vehicle_match.group(0).strip() if vehicle_match else None
 
-    # If query is too vague, ask clarification
-    if not vehicle and not skus_in_msg and re.search(r"\b(brake pads|chain|filter|oil|battery|mirror)\b", msg, re.I):
+    # Clean query terms
+    cleaned_query = msg
+    if vehicle:
+        cleaned_query = re.sub(re.escape(vehicle), "", cleaned_query, flags=re.I)
+    cleaned_query = re.sub(
+        r"\b(do you have|find|search|parts for|for a|for|in stock|show me|any|can i get|what are the)\b",
+        "",
+        cleaned_query,
+        flags=re.I,
+    ).strip()
+
+    # Ambiguity Check: Vague query with no vehicle specified
+    if not vehicle and re.search(r"^\s*(brake pads?|chains?|filters?|engine oils?|mirrors?|batteries?)\s*\??$", msg, re.I):
         return {
-            "reply": "Which vehicle make and model are you looking for? (For example: Bajaj Pulsar 150, KTM Duke 390, or TVS Apache RTR 160).",
+            "reply": (
+                "Which motorcycle model are you looking for? We stock compatible parts for:\n"
+                "• **KTM Duke 390 / 200**\n"
+                "• **Bajaj Pulsar 150 / NS200 / Dominar 400**\n"
+                "• **Royal Enfield Classic 350 / Hunter 350 / Himalayan 450**\n"
+                "• **TVS Apache RTR 160 / 200**\n"
+                "• **Yamaha MT-15 / R15 V4 / FZ-S**"
+            ),
             "cited_skus": [],
             "tool_calls": [],
             "actions": [],
         }
 
-    tool_args = {"query": part_query or "parts", "vehicle": vehicle}
+    # 9. Execute Search via search_parts tool
+    search_q = cleaned_query if len(cleaned_query) > 1 else ""
+    tool_args = {"query": search_q, "vehicle": vehicle, "limit": 4}
     tool_res = AVAILABLE_TOOLS["search_parts"](**tool_args)
-    tool_calls.append({"name": "search_parts", "arguments": tool_args})
+    tool_calls.append({"tool": "search_parts", "name": "search_parts", "arguments": tool_args, "result": tool_res})
 
     if tool_res:
         lines = []
-        for p in tool_res[:3]:
+        for p in tool_res[:4]:
             cited_skus.append(p["sku"])
-            lines.append(f"{p['name']} ({p['sku']}) - ₹{p['price']} ({p['stock']} in stock)")
-        reply = "Here are the matching parts from our catalogue:\n" + "\n".join(f"• {l}" for l in lines)
+            stk_str = f"{p['stock']} in stock" if p['stock'] > 0 else "out of stock"
+            lines.append(f"• **{p['name']}** (`{p['sku']}`) — **₹{p['price']}** | *{p['vehicle_fitment']}* ({stk_str})")
+        
+        reply = "Here are the matching parts from our catalogue:\n" + "\n".join(lines) + "\n\nLet me know if you would like to check stock details or place a draft order!"
     else:
-        reply = "No matching parts found in our catalogue. Please check the vehicle model or part name."
+        reply = (
+            f"No matching parts were found for '{msg}'. "
+            "Please check the vehicle model (e.g. 'Pulsar 150', 'Duke 390') or try searching by category."
+        )
 
     return {
         "reply": reply,

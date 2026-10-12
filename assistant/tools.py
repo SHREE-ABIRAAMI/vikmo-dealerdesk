@@ -3,27 +3,57 @@ from products.models import Product, Inventory
 from orders.services import create_draft_order as order_service_create_draft
 
 
+import re
+
+STOPWORDS = {
+    "what", "are", "the", "do", "you", "have", "can", "tell", "me", "about",
+    "for", "a", "an", "is", "in", "of", "to", "with", "and", "or", "any",
+    "some", "please", "parts", "part", "i", "need", "want", "looking", "show"
+}
+
+
 def tool_search_parts(query: str = "", vehicle: str = None, category: str = None, limit: int = 5):
     """Search catalogue for products matching query, vehicle, and/or category."""
     qs = Product.objects.select_related("inventory").all()
 
     if vehicle and str(vehicle).strip():
-        qs = qs.filter(vehicle_fitment__icontains=str(vehicle).strip())
+        v_clean = str(vehicle).strip()
+        qs = qs.filter(vehicle_fitment__icontains=v_clean)
 
     if category and str(category).strip():
-        qs = qs.filter(category__iexact=str(category).strip())
+        c_clean = str(category).strip()
+        qs = qs.filter(category__icontains=c_clean)
 
     if query and str(query).strip():
-        terms = str(query).strip().split()
-        q_obj = Q()
-        for term in terms:
-            q_obj |= (
-                Q(name__icontains=term)
-                | Q(sku__icontains=term)
-                | Q(brand__icontains=term)
-                | Q(description__icontains=term)
-            )
-        qs = qs.filter(q_obj)
+        clean_words = [
+            w for w in re.findall(r"[a-zA-Z0-9]+", str(query).lower())
+            if len(w) > 1 and w not in STOPWORDS
+        ]
+        if clean_words:
+            # First try conjunction (AND) across all terms
+            and_q = Q()
+            for term in clean_words:
+                and_q &= (
+                    Q(name__icontains=term)
+                    | Q(sku__icontains=term)
+                    | Q(brand__icontains=term)
+                    | Q(description__icontains=term)
+                    | Q(vehicle_fitment__icontains=term)
+                )
+            and_results = qs.filter(and_q)
+            if and_results.exists():
+                qs = and_results
+            else:
+                # Fallback to disjunction (OR)
+                or_q = Q()
+                for term in clean_words:
+                    or_q |= (
+                        Q(name__icontains=term)
+                        | Q(sku__icontains=term)
+                        | Q(brand__icontains=term)
+                        | Q(description__icontains=term)
+                    )
+                qs = qs.filter(or_q)
 
     results = []
     for p in qs[:limit]:
