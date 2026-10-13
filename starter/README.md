@@ -1,5 +1,10 @@
 # DealerDesk starter
 
+> 💡 **Official Submission Links:**
+> - **GitHub Repository:** [https://github.com/SHREE-ABIRAAMI/vikmo-dealerdesk](https://github.com/SHREE-ABIRAAMI/vikmo-dealerdesk)
+> - **5-Minute Video Walkthrough:** [https://drive.google.com/file/d/1m3yPWlLj92S2MGF_kJkEa73yvJBF8foN/view?usp=sharing](https://drive.google.com/file/d/1m3yPWlLj92S2MGF_kJkEa73yvJBF8foN/view?usp=sharing)
+> - **Complete Documentation:** See the root [**`README.md`**](../README.md) for full project architecture, quickstart, and API reference.
+
 A minimal Django project that already follows the run contract. It has **no models and no business logic**: designing those is the assignment.
 
 What's here:
